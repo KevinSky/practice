@@ -1,15 +1,37 @@
 package kevin.practice.mybatis;
 
-import kevin.lib.performance.PerformanceTest;
-import kevin.lib.performance.tools.HttpJsonPerform;
+import kevin.practice.mybatis.service.NewsService;
 
 public class NewsTest {
 
-    public static void main(String[] args) {
-        HttpJsonPerform t = new HttpJsonPerform("http://localhost:8080/test");
-        PerformanceTest t1 = new PerformanceTest(t, 1000, 10, 100);
-        t1.start();
-        System.out.println(t1.getReport());
-    }
+	public static void testSave() {
 
+		String host = "www.goole.com";
+		String url = "http://www.google.com";
+		String title = "index";
+
+		try {
+			NewsService.getNewsService().saveNews(host, url, title);
+			System.out.println("save!!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void testSaveTransaction() {
+		String host = "www.goole.com";
+		String url = "http://www.google.com";
+		String title = "index";
+
+		try {
+			NewsService.getNewsService().saveNewsWithTransaction(host, url,
+					title);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) {
+		testSaveTransaction();
+	}
 }
