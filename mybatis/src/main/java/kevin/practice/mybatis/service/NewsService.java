@@ -1,14 +1,18 @@
 package kevin.practice.mybatis.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
+import kevin.lib.util.exceptions.BusinessException;
 import kevin.lib.util.exceptions.ServiceException;
 import kevin.practive.mybatis.dao.custom.CustomNewsMapper;
 import kevin.practive.mybatis.dao.factory.MapperFactory;
 import kevin.practive.mybatis.dao.model.News;
-import kevin.practive.mybatis.dao.model.NewsExample;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.transaction.Transaction;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,5 +55,56 @@ public class NewsService {
         if (ex != null)
             throw new ServiceException(ex);
         return list;
+    }
+
+    public void saveNewsWithTransaction(String host, String title, String url) throws BusinessException,
+            ServiceException, SQLException {
+
+        News news = new News();
+        news.setHost(host);
+        news.setTitle(title);
+        news.setUrl(url);
+
+        Exception ex = null;
+        SqlSession sqlSession = MapperFactory.getSqlSessionFactory().openSession();
+        Transaction transaction = MapperFactory.getTransaction(sqlSession.getConnection());
+        try {
+            CustomNewsMapper newsMapper = sqlSession.getMapper(CustomNewsMapper.class);
+            newsMapper.insertSelective(news);
+            newsMapper.insertSelective(news);
+            transaction.commit();
+        } catch (Exception e) {
+            log.error("saveNewsWithTransaction error. host:" + host + ", title:" + title + ", url:" + url, e);
+            ex = e;
+            transaction.rollback();
+        } finally {
+            transaction.close();
+        }
+        if (ex != null)
+            throw new ServiceException(ex);
+    }
+
+    public void saveNews(String host, String title, String url) throws BusinessException,
+            ServiceException {
+
+        News news = new News();
+        news.setHost(host);
+        news.setTitle(title);
+        news.setUrl(url);
+
+        Exception ex = null;
+        SqlSession sqlSession = MapperFactory.getSqlSessionFactory().openSession();
+        try {
+            CustomNewsMapper newsMapper = sqlSession.getMapper(CustomNewsMapper.class);
+            newsMapper.insertSelective(news);
+            newsMapper.insertSelective(news);
+        } catch (Exception e) {
+            log.error("saveNewsWithTransaction error. host:" + host + ", title:" + title + ", url:" + url, e);
+            ex = e;
+        } finally {
+            sqlSession.close();
+        }
+        if (ex != null)
+            throw new ServiceException(ex);
     }
 }

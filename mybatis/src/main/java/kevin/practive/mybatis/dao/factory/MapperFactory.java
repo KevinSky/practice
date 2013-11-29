@@ -1,15 +1,25 @@
 package kevin.practive.mybatis.dao.factory;
 
+import java.sql.Connection;
+
 import kevin.lib.util.JsonUtil;
 import kevin.practive.mybatis.dao.custom.CustomNewsMapper;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.ibatis.exceptions.ExceptionFactory;
+import org.apache.ibatis.executor.ErrorContext;
+import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.session.defaults.DefaultSqlSession;
+import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +27,8 @@ public class MapperFactory {
     private static final Logger log = LoggerFactory.getLogger(MapperFactory.class);
 
     private static SqlSessionFactory sqlSessionFactory = null;
+    private static Environment environment = null;
+    private static Configuration configuration = null;
 
     public static SqlSessionFactory getSqlSessionFactory() {
         log.debug("geting sqlSessionFactory.");
@@ -50,11 +62,29 @@ public class MapperFactory {
         dataSource.setDefaultAutoCommit(true);
 
         TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        Environment environment = new Environment("development", transactionFactory, dataSource);
-        Configuration configuration = new Configuration(environment);
+        environment = new Environment("development", transactionFactory, dataSource);
+        configuration = new Configuration(environment);
         configuration.addMapper(CustomNewsMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 
         log.debug("init sqlSessionFactory ok!");
+    }
+
+    public static Transaction getTransaction(Connection connection) {
+        try {
+            final Environment environment = configuration.getEnvironment();
+            final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+            final Transaction tx = transactionFactory.newTransaction(connection);
+            return tx;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } 
+    }
+
+    private static TransactionFactory getTransactionFactoryFromEnvironment(Environment environment) {
+        if (environment == null || environment.getTransactionFactory() == null) {
+            return new ManagedTransactionFactory();
+        }
+        return environment.getTransactionFactory();
     }
 }

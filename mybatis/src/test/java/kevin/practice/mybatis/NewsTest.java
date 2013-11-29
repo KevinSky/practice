@@ -1,15 +1,32 @@
 package kevin.practice.mybatis;
 
-import kevin.lib.performance.PerformanceTest;
-import kevin.lib.performance.tools.HttpJsonPerform;
+import java.sql.SQLException;
+
+import kevin.lib.util.exceptions.BusinessException;
+import kevin.lib.util.exceptions.ServiceException;
+import kevin.practice.mybatis.service.NewsService;
 
 public class NewsTest {
 
-    public static void main(String[] args) {
-        HttpJsonPerform t = new HttpJsonPerform("http://localhost:8080/test");
-        PerformanceTest t1 = new PerformanceTest(t, 1000, 10, 100);
-        t1.start();
-        System.out.println(t1.getReport());
+    public static void testTransaction() {
+        String host = "google";
+        String url = "http://www.google.com";
+        String title = "index";
+        try {
+            NewsService.getNewsService().saveNewsWithTransaction(host, title, url);
+        } catch (BusinessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ServiceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
-
+    
+    public static void main(String[] args) {
+        testTransaction();
+    }
 }
