@@ -77,18 +77,49 @@ public class TestServiceImpl implements TestInterface, TestService{
     
     /**
      * 测试一个rollback，另一个会如何
+     * 
+     * 嵌套transaction的话。commit取决于最外层的transaction，即使里面的commit了，外层未commit也无效
+     * 里面如果rollback了，外层的只能进行rollbac操作，而不能进行commit（会报UnexpectedRollbackException: Transaction rolled back because it has been marked as rollback-only）
      */
     @Override
     public void testOneRollback() {
-        
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        saveTest1("1");
+        TransactionStatus status = test1TransactionManager.getTransaction(def);
+        testCommit1();
+        test1TransactionManager.commit(status);
+        saveTest1("2");
+    }
+    
+    public void testCommit1() {
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = test1TransactionManager.getTransaction(def);
+        saveTest1("testCommit1");
+        test1TransactionManager.rollback(status);
+    }
+    public void testCommit2() {
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = test1TransactionManager.getTransaction(def);
+        saveTest1("testCommit1");
+        test1TransactionManager.commit(status);
     }
     
     /**
      * 测试两个都rollback，会如何
+     * 
+     * 两个txManager的事务相互不影响
      */
     @Override
     public void testTwoRollback() {
-        
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = test2TransactionManager.getTransaction(def);
+        testCommit2();
+        saveTest2("2");
+        test2TransactionManager.rollback(status);
     }
 
     @Override

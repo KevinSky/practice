@@ -26,7 +26,34 @@ public class NewsTest {
         }
     }
     
-    public static void main(String[] args) {
-        testTransaction();
-    }
+	public static void testSave() {
+
+		String host = "www.goole.com";
+		String url = "http://www.google.com";
+		String title = "index";
+
+		try {
+			NewsService.getNewsService().saveNews(host, url, title);
+			System.out.println("save!!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void testSaveTransaction() {
+		String host = "www.goole.com";
+		String url = "http://www.google.com";
+		String title = "index";
+
+		try {
+			NewsService.getNewsService().saveNewsWithTransaction(host, url,
+					title);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) {
+		testSaveTransaction();
+	}
 }

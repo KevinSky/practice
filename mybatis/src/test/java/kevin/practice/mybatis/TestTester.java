@@ -40,24 +40,36 @@ public class TestTester extends BaseTester implements TestInterface {
 
     @Override
     public void testSimpleRollback() throws ServiceException {
-        testService.testSimpleRollback();
+        try {
+            testService.testSimpleRollback();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
     }
 
     @Override
     public void testOneRollback() {
-        // TODO Auto-generated method stub
+        try {
+            testService.testOneRollback();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
     }
-
-    @Override
-    public void testTwoRollback() {
-        // TODO Auto-generated method stub
-        
-    }
-
 
     @Test
+    @Override
+    public void testTwoRollback() {
+        try {
+            testService.testTwoRollback();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
+
+
     @Override
     public void testCommintBewteen() {
         testService.testCommintBewteen();
