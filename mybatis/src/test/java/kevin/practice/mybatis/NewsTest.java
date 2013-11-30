@@ -1,6 +1,6 @@
 package kevin.practice.mybatis;
 
-import kevin.practice.mybatis.service.NewsService;
+import kevin.practice.mybatis.service.impl.NewsServiceImpl;
 
 public class NewsTest {
 
@@ -11,7 +11,7 @@ public class NewsTest {
 		String title = "index";
 
 		try {
-			NewsService.getNewsService().saveNews(host, url, title);
+			NewsServiceImpl.getNewsService().saveNews(host, url, title);
 			System.out.println("save!!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -24,7 +24,7 @@ public class NewsTest {
 		String title = "index";
 
 		try {
-			NewsService.getNewsService().saveNewsWithTransaction(host, url,
+			NewsServiceImpl.getNewsService().saveNewsWithTransaction(host, url,
 					title);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,7 +1,6 @@
 package kevin.practice.mybatis.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import kevin.lib.util.JsonUtil;
-import kevin.practice.mybatis.service.NewsService;
-import kevin.practive.mybatis.dao.model.News;
+import kevin.practice.mybatis.dao.model.News;
+import kevin.practice.mybatis.service.impl.NewsServiceImpl;
 
 public class MyBatisServlet extends HttpServlet {
 
@@ -35,7 +34,7 @@ public class MyBatisServlet extends HttpServlet {
         Object data = null;
         String message = "";
         try {
-            List<News> list = NewsService.getNewsService().getNewsList();
+            List<News> list = NewsServiceImpl.getNewsService().getNewsList();
             data = list;
         } catch (Exception e) {
             code = -1;
