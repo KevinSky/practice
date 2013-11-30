@@ -32,9 +32,20 @@
 			<version>5.1.24</version>
 		</dependency>
 		<dependency>
+<<<<<<< HEAD
 			<groupId>kevin.lib</groupId>
 			<artifactId>lib-util</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+=======
+			<groupId>com.sun.tools.btrace</groupId>
+			<artifactId>btrace-agent</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.tools.btrace</groupId>
+			<artifactId>btrace-client</artifactId>
+			<version>1.2.3</version>
+>>>>>>> 9b1e22d932124bcf0b387e19e3ce8f55aca735c1
 		</dependency>
 	</dependencies>
 	<build>

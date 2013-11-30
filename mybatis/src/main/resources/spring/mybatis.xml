@@ -1,42 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.0.xsd
-	">
-		
+    http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    ">
 
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	<!-- news start -->
+	<bean id="newsDataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-		<property name="url" value="jdbc:mysql://127.0.0.1:3306/news_system?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true"></property>
-		<property name="username" value="root"></property>
-		<property name="password" value="mysql"></property>
-		<property name="maxActive" value="20"></property>
-		<property name="maxIdle" value="10"></property>
+		<property name="url"
+			value="jdbc:mysql://${news.jdbc.host}:${news.jdbc.port}/${news.jdbc.dbname}?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true"></property>
+		<property name="username" value="${news.jdbc.username}"></property>
+		<property name="password" value="${news.jdbc.password}"></property>
+		<property name="maxActive" value="100"></property>
+		<property name="maxIdle" value="100"></property>
 		<property name="maxWait" value="5000"></property>
 		<property name="defaultAutoCommit" value="true"></property>
 	</bean>
-
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
+	<bean id="newsSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="newsDataSource" />
 	</bean>
-
-	<!--
-	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="kevin.practice.mybatis.dao.custom" />
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+		<property name="sqlSessionFactoryBeanName" value="newsSqlSessionFactory" />
 	</bean>
-	-->
-	
-	<bean id="customNewsMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="kevin.practice.mybatis.dao.custom.CustomNewsMapper" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	<!-- news end -->
+
+	<!-- test1 start -->
+	<bean id="test1DataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url"
+			value="jdbc:mysql://${test1.jdbc.host}:${test1.jdbc.port}/${test1.jdbc.dbname}?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true"></property>
+		<property name="username" value="${test1.jdbc.username}"></property>
+		<property name="password" value="${test1.jdbc.password}"></property>
+		<property name="maxActive" value="100"></property>
+		<property name="maxIdle" value="100"></property>
+		<property name="maxWait" value="5000"></property>
+		<property name="defaultAutoCommit" value="true"></property>
 	</bean>
-	
-	<bean id="newsService" class="kevin.practice.mybatis.service.spring.NewsServiceImpl">
-		<property name="customNewsMapper" ref="customNewsMapper" />
+	<bean id="test1SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="test1DataSource" />
 	</bean>
-	
-	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+			value="kevin.practice.mybatis.test1.database.gen.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="test1SqlSessionFactory" />
+	</bean>
+	<bean id="test1TransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="test1DataSource" />
+	</bean>
+	<!-- test1 end -->
+
+	<!-- test2 start -->
+	<bean id="test2DataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url"
+			value="jdbc:mysql://${test2.jdbc.host}:${test2.jdbc.port}/${test2.jdbc.dbname}?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true"></property>
+		<property name="username" value="${test2.jdbc.username}"></property>
+		<property name="password" value="${test2.jdbc.password}"></property>
+		<property name="maxActive" value="100"></property>
+		<property name="maxIdle" value="100"></property>
+		<property name="maxWait" value="5000"></property>
+		<property name="defaultAutoCommit" value="true"></property>
+	</bean>
+	<bean id="test2SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="test2DataSource" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+			value="kevin.practice.mybatis.test2.database.gen.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="test2SqlSessionFactory" />
+	</bean>
+	<bean id="test2TransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="test2DataSource" />
+	</bean>
+	<!-- test2 end -->
 </beans>
