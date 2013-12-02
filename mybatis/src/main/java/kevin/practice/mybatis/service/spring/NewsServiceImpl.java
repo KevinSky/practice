@@ -82,4 +82,5 @@ public class NewsServiceImpl implements NewsService {
 			throw new ServiceException(e);
 		}
 	}
+	
 }

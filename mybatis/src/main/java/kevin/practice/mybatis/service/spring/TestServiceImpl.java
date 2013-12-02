@@ -1,6 +1,8 @@
-package kevin.practice.mybatis.service;
+package kevin.practice.mybatis.service.spring;
 
 import kevin.lib.util.exceptions.ServiceException;
+import kevin.practice.mybatis.service.TestInterface;
+import kevin.practice.mybatis.service.TestService;
 import kevin.practice.mybatis.test1.database.gen.mapper.Test1Mapper;
 import kevin.practice.mybatis.test1.database.gen.model.Test1;
 import kevin.practice.mybatis.test2.database.gen.mapper.Test2Mapper;
@@ -80,16 +82,18 @@ public class TestServiceImpl implements TestInterface, TestService{
      * 
      * 嵌套transaction的话。commit取决于最外层的transaction，即使里面的commit了，外层未commit也无效
      * 里面如果rollback了，外层的只能进行rollbac操作，而不能进行commit（会报UnexpectedRollbackException: Transaction rolled back because it has been marked as rollback-only）
+     * @throws ServiceException 
      */
     @Override
-    public void testOneRollback() {
+    public void testOneRollback() throws ServiceException {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
         saveTest1("1");
         TransactionStatus status = test1TransactionManager.getTransaction(def);
-        testCommit1();
-        test1TransactionManager.commit(status);
         saveTest1("2");
+        test1TransactionManager.commit(status);
+        testCommit1();
+        throw new ServiceException("test rollback");
     }
     
     public void testCommit1() {
@@ -97,7 +101,7 @@ public class TestServiceImpl implements TestInterface, TestService{
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
         TransactionStatus status = test1TransactionManager.getTransaction(def);
         saveTest1("testCommit1");
-        test1TransactionManager.rollback(status);
+        test1TransactionManager.commit(status);
     }
     public void testCommit2() {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
@@ -161,5 +165,19 @@ public class TestServiceImpl implements TestInterface, TestService{
         t.setName(name);
         testMapper2.updateByPrimaryKeySelective(t);
     }
+
+	@Override
+	public void testAopTransaction() throws ServiceException {
+		saveTest1("aop");
+		throw new ServiceException("test");
+	}
+
+	@Override
+	public void testNestedAOPTransaction() throws ServiceException {
+		testAopTransaction();
+		saveTest1("aopnested");
+		saveTest2("aopnested");
+		
+	}
     
 }

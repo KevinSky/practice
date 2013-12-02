@@ -48,6 +48,7 @@ public class TestTester extends BaseTester implements TestInterface {
         
     }
 
+    @Test
     @Override
     public void testOneRollback() {
         try {
@@ -58,7 +59,7 @@ public class TestTester extends BaseTester implements TestInterface {
         
     }
 
-    @Test
+    
     @Override
     public void testTwoRollback() {
         try {
@@ -75,5 +76,27 @@ public class TestTester extends BaseTester implements TestInterface {
         testService.testCommintBewteen();
         
     }
+
+	@Override
+	public void testAopTransaction() {
+		try {
+			testService.testAopTransaction();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+
+	@Override
+	public void testNestedAOPTransaction() {
+		try {
+			testService.testNestedAOPTransaction();
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
     
 }
