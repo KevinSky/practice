@@ -32,7 +32,7 @@ public class TestServiceJtaImpl implements TestInterface, TestService{
      */
     @Override
     public void testAutoCommit() throws ServiceException {
-        saveTest1("testAutoCommit");
+        saveTest1("jtaAutoCommit");
 //        throw new ServiceException("testAutoCommit");
     }
 
@@ -48,13 +48,13 @@ public class TestServiceJtaImpl implements TestInterface, TestService{
 
         TransactionStatus status = jtaTransactionManager.getTransaction(def);
         try {
-            testAutoCommit();
-            jtaTransactionManager.commit(status);
+            saveTest1("jta");
+            saveTest2("jta");
+            jtaTransactionManager.rollback(status);
         } catch (Exception ex) {
             jtaTransactionManager.rollback(status);
             ex.printStackTrace();
         }
-        throw new ServiceException("testSimpleRollback");
     }
     
     /**
@@ -86,12 +86,11 @@ public class TestServiceJtaImpl implements TestInterface, TestService{
     public void testOneRollback() throws ServiceException {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        saveTest1("1");
+        saveTest1("jta1");
         TransactionStatus status = jtaTransactionManager.getTransaction(def);
-        saveTest1("2");
+        testSimpleRollback();
         jtaTransactionManager.commit(status);
-        testCommit1();
-        throw new ServiceException("test rollback");
+        saveTest2("jta2");
     }
     
     public void testCommit1() {

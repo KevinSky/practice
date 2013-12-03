@@ -67,7 +67,7 @@
 	</bean>
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage"
-			value="kevin.practice.mybatis.test1.database.gen.mapper" />
+			value="kevin.practice.mybatis.test2.database.gen.mapper" />
 		<property name="sqlSessionFactoryBeanName" value="test2JtaSqlSessionFactory" />
 	</bean>
 	<bean id="jtaTransactionManager"

@@ -105,12 +105,13 @@ public class NewsServiceImpl implements NewsService{
 		news.setUrl(url);
 
 		SqlSession sqlSession = MapperFactory.getSqlSessionFactory()
-				.openSession(true);
+				.openSession(false);
 		Exception ex = null;
 		try {
 			CustomNewsMapper newsMapper = sqlSession
 					.getMapper(CustomNewsMapper.class);
 			newsMapper.insertSelective(news);
+//			sqlSession.commit();
 		} catch (Exception e) {
 			log.error("saveNewsWithTransaction error. host:" + host + ", url:"
 					+ url + ", title" + title, e);

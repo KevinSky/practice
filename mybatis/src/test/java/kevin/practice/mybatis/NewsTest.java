@@ -31,7 +31,7 @@ public class NewsTest {
 
 		String host = "www.goole.com";
 		String url = "http://www.google.com";
-		String title = "index";
+		String title = "index11";
 
 		try {
 			NewsServiceImpl.getNewsService().saveNews(host, url, title);
@@ -79,6 +79,6 @@ public class NewsTest {
     }
 	
 	public static void main(String[] args) {
-	    testSaveNewsSameTransaction();
+	    testSave();
 	}
 }
