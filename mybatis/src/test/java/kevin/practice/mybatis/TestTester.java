@@ -31,7 +31,7 @@ public class TestTester extends BaseTester implements TestInterface {
         testMapper2.insertSelective(t2);
     }
 
-   
+    @Test
     @Override
     public void testAutoCommit() throws ServiceException {
         testService.testAutoCommit();
@@ -48,7 +48,6 @@ public class TestTester extends BaseTester implements TestInterface {
         
     }
 
-    @Test
     @Override
     public void testOneRollback() {
         try {

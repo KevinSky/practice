@@ -1,14 +1,11 @@
 package kevin.practice.mybatis;
 
-<<<<<<< HEAD
 import kevin.practice.mybatis.service.impl.NewsServiceImpl;
-=======
 import java.sql.SQLException;
 
 import kevin.lib.util.exceptions.BusinessException;
 import kevin.lib.util.exceptions.ServiceException;
 import kevin.practice.mybatis.service.NewsService;
->>>>>>> 9b1e22d932124bcf0b387e19e3ce8f55aca735c1
 
 public class NewsTest {
 
@@ -17,14 +14,14 @@ public class NewsTest {
         String url = "http://www.google.com";
         String title = "index";
         try {
-            NewsService.getNewsService().saveNewsWithTransaction(host, title, url);
+            NewsServiceImpl.getNewsService().saveNewsWithTransaction(host, title, url);
         } catch (BusinessException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ServiceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -45,9 +42,9 @@ public class NewsTest {
 	}
 
 	public static void testSaveTransaction() {
-		String host = "www.goole.com";
-		String url = "http://www.google.com";
-		String title = "index";
+		String host = "www.baidu.com";
+		String url = "http://www.baidu.com";
+		String title = "test";
 
 		try {
 			NewsServiceImpl.getNewsService().saveNewsWithTransaction(host, url,
@@ -57,7 +54,31 @@ public class NewsTest {
 		}
 	}
 	
+	public static void testSaveNewsWithNestedTransaction(){
+	    String host = "www.baidu.com";
+        String url = "http://www.baidu.com";
+        String title = "test";
+
+        try {
+            NewsServiceImpl.getNewsService().saveNewsWithNestedTransaction(host, url, title);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public static void testSaveNewsSameTransaction(){
+        String host = "www.baidu.com";
+        String url = "http://www.baidu.com";
+        String title = "test4";
+
+        try {
+            NewsServiceImpl.getNewsService().saveNewsSameTransaction(host, url, title);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
 	public static void main(String[] args) {
-		testSaveTransaction();
+	    testSaveNewsSameTransaction();
 	}
 }

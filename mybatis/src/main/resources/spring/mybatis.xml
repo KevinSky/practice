@@ -85,8 +85,6 @@
 		<property name="dataSource" ref="test2DataSource" />
 	</bean>
 	<!-- test2 end -->
-	
-	
 	<!-- spring declarative transaction management -->  
 	<aop:config>  
 		<aop:pointcut id="testMethods"   
@@ -95,7 +93,9 @@
 	</aop:config>  
 	<tx:advice id="txAdvice" transaction-manager="test1TransactionManager">  
 		<tx:attributes>  
-			<tx:method name="testOneRollback" rollback-for="BusinessException"/>  
+			<tx:method name="testNestedAOPTransaction" rollback-for="ServiceException"/>  
 		</tx:attributes>  
 	</tx:advice>  
+	
+	<tx:jta-transaction-manager />
 </beans>

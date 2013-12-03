@@ -1,5 +1,6 @@
 package kevin.practice.mybatis.service.impl;
 
+import java.sql.Connection;
 import java.util.List;
 
 import kevin.lib.util.exceptions.BusinessException;
@@ -78,6 +79,10 @@ public class NewsServiceImpl implements NewsService{
 			CustomNewsMapper newsMapper = sqlSession
 					.getMapper(CustomNewsMapper.class);
 			newsMapper.insertSelective(news);
+			
+			saveNews("test1","test1","test");
+			MapperFactory.transactionRollback(transaction);
+//			transaction.commit();
 		} catch (Exception e) {
 			log.error("saveNewsWithTransaction error. host:" + host + ", url:"
 					+ url + ", title" + title, e);
@@ -116,4 +121,83 @@ public class NewsServiceImpl implements NewsService{
 		if (ex != null)
 			throw new ServiceException(ex);
 	}
+
+    @Override
+    public void saveNewsWithNestedTransaction(String host, String url, String title) throws BusinessException,
+            ServiceException {
+        News news = new News();
+        news.setHost(host);
+        news.setTitle(title);
+        news.setUrl(url);
+
+        SqlSession sqlSession = MapperFactory.getSqlSessionFactory()
+                .openSession();
+        Transaction transaction = MapperFactory.getTransaction(sqlSession
+                .getConnection());
+        Exception ex = null;
+        try {
+            CustomNewsMapper newsMapper = sqlSession
+                    .getMapper(CustomNewsMapper.class);
+            newsMapper.insertSelective(news);
+            CustomNewsMapper newsMapper2 = sqlSession
+                    .getMapper(CustomNewsMapper.class);
+            newsMapper2.insertSelective(news);
+            
+            saveNewsWithTransaction("test2","test2","test");
+            MapperFactory.transactionRollback(transaction);
+//            transaction.commit();
+        } catch (Exception e) {
+            log.error("saveNewsWithTransaction error. host:" + host + ", url:"
+                    + url + ", title" + title, e);
+            MapperFactory.transactionRollback(transaction);
+            ex = e;
+        } finally {
+            MapperFactory.transactionClose(transaction);
+        }
+        if (ex != null)
+            throw new ServiceException(ex);
+        
+    }
+    
+    
+    @Override
+    public void saveNewsSameTransaction(String host, String url, String title) throws BusinessException,
+            ServiceException {
+        News news = new News();
+        news.setHost(host);
+        news.setTitle(title);
+        news.setUrl(url);
+
+        SqlSession sqlSession = MapperFactory.getSqlSessionFactory()
+                .openSession();
+        Connection c = sqlSession.getConnection();
+        Transaction transaction = MapperFactory.getTransaction(c);
+        Exception ex = null;
+        try {
+            CustomNewsMapper newsMapper = sqlSession
+                    .getMapper(CustomNewsMapper.class);
+            newsMapper.insertSelective(news);
+            
+            Transaction transaction2 = MapperFactory.getTransaction(c);
+            CustomNewsMapper newsMapper2 = sqlSession
+                    .getMapper(CustomNewsMapper.class);
+            newsMapper2.insertSelective(news);
+            MapperFactory.transactionRollback(transaction2);
+            transaction2.commit();
+            
+//            MapperFactory.transactionRollback(transaction);
+//            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("saveNewsWithTransaction error. host:" + host + ", url:"
+                    + url + ", title" + title, e);
+            MapperFactory.transactionRollback(transaction);
+            ex = e;
+        } finally {
+            MapperFactory.transactionClose(transaction);
+        }
+        if (ex != null)
+            throw new ServiceException(ex);
+        
+    }
 }

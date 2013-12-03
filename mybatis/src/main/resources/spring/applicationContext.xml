@@ -23,7 +23,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 	</context:component-scan>
 	
 	<context:annotation-config />
-	
-	<import resource="mybatis.xml" />
+	<!--import resource="mybatis.xml" /-->
+	<import resource="jta.xml" />
 
 </beans>

@@ -9,18 +9,17 @@ import kevin.practice.mybatis.test2.database.gen.mapper.Test2Mapper;
 import kevin.practice.mybatis.test2.database.gen.model.Test2;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-public class TestServiceImpl implements TestInterface, TestService{
+@Service("testService")
+public class TestServiceJtaImpl implements TestInterface, TestService{
 
     @Autowired
-    private DataSourceTransactionManager test1TransactionManager;
-    @Autowired
-    private DataSourceTransactionManager test2TransactionManager;
+    private JtaTransactionManager jtaTransactionManager;
     @Autowired
     public Test1Mapper testMapper1;
     @Autowired
@@ -34,7 +33,7 @@ public class TestServiceImpl implements TestInterface, TestService{
     @Override
     public void testAutoCommit() throws ServiceException {
         saveTest1("testAutoCommit");
-        throw new ServiceException("testAutoCommit");
+//        throw new ServiceException("testAutoCommit");
     }
 
     /**
@@ -47,12 +46,12 @@ public class TestServiceImpl implements TestInterface, TestService{
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 
-        TransactionStatus status = test1TransactionManager.getTransaction(def);
+        TransactionStatus status = jtaTransactionManager.getTransaction(def);
         try {
             testAutoCommit();
-            test1TransactionManager.commit(status);
+            jtaTransactionManager.commit(status);
         } catch (Exception ex) {
-            test1TransactionManager.rollback(status);
+            jtaTransactionManager.rollback(status);
             ex.printStackTrace();
         }
         throw new ServiceException("testSimpleRollback");
@@ -69,10 +68,10 @@ public class TestServiceImpl implements TestInterface, TestService{
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
         saveTest1("nottransaction");
-        TransactionStatus status = test1TransactionManager.getTransaction(def);
+        TransactionStatus status = jtaTransactionManager.getTransaction(def);
         saveTest1("tansaction1");
         saveTest2("tansaction1");
-        test1TransactionManager.rollback(status);
+        jtaTransactionManager.rollback(status);
         saveTest1("notTansaction1");
     }
     
@@ -88,9 +87,9 @@ public class TestServiceImpl implements TestInterface, TestService{
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
         saveTest1("1");
-        TransactionStatus status = test1TransactionManager.getTransaction(def);
+        TransactionStatus status = jtaTransactionManager.getTransaction(def);
         saveTest1("2");
-        test1TransactionManager.commit(status);
+        jtaTransactionManager.commit(status);
         testCommit1();
         throw new ServiceException("test rollback");
     }
@@ -98,16 +97,16 @@ public class TestServiceImpl implements TestInterface, TestService{
     public void testCommit1() {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus status = test1TransactionManager.getTransaction(def);
+        TransactionStatus status = jtaTransactionManager.getTransaction(def);
         saveTest1("testCommit1");
-        test1TransactionManager.commit(status);
+        jtaTransactionManager.commit(status);
     }
     public void testCommit2() {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus status = test1TransactionManager.getTransaction(def);
+        TransactionStatus status = jtaTransactionManager.getTransaction(def);
         saveTest1("testCommit1");
-        test1TransactionManager.commit(status);
+        jtaTransactionManager.commit(status);
     }
     
     /**
@@ -119,10 +118,10 @@ public class TestServiceImpl implements TestInterface, TestService{
     public void testTwoRollback() {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus status = test2TransactionManager.getTransaction(def);
+        TransactionStatus status = jtaTransactionManager.getTransaction(def);
         testCommit2();
         saveTest2("2");
-        test2TransactionManager.rollback(status);
+        jtaTransactionManager.rollback(status);
     }
 
     @Override
@@ -165,18 +164,18 @@ public class TestServiceImpl implements TestInterface, TestService{
         testMapper2.updateByPrimaryKeySelective(t);
     }
 
-	@Override
-	public void testAopTransaction() throws ServiceException {
-		saveTest1("aop");
-		throw new ServiceException("test");
-	}
+    @Override
+    public void testAopTransaction() throws ServiceException {
+        saveTest1("aop");
+        throw new ServiceException("test");
+    }
 
-	@Override
-	public void testNestedAOPTransaction() throws ServiceException {
-	    saveTest1("aopnested");
-	    saveTest2("aopnested");
-		testAopTransaction();
-		
-	}
+    @Override
+    public void testNestedAOPTransaction() throws ServiceException {
+        saveTest1("aopnested");
+        saveTest2("aopnested");
+        testAopTransaction();
+        
+    }
     
 }

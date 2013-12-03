@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+                     http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd 
+                     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd 
+                     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	<!-- JOTM实例 -->
+	<bean id="jotm" class="org.springframework.transaction.jta.JotmFactoryBean" />
+	<!-- JTA事务管理器 -->
+	<!-- 数据源A --> 
+    <bean id="test1JtaDataSource" class="org.enhydra.jdbc.pool.StandardXAPoolDataSource" destroy-method="shutdown"> 
+            <property name="dataSource"> 
+                    <bean class="org.enhydra.jdbc.standard.StandardXADataSource" destroy-method="shutdown"> 
+                            <property name="transactionManager" ref="jotm"/> 
+                            <property name="driverName" value="com.mysql.jdbc.Driver"/> 
+                            <property name="url" value="jdbc:mysql://${test1.jdbc.host}:${test1.jdbc.port}/${test1.jdbc.dbname}?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true"/> 
+                    </bean> 
+            </property> 
+            <property name="user" value="${test1.jdbc.username}"/> 
+            <property name="password" value="${test1.jdbc.password}"/> 
+    </bean> 
+    <!-- 数据源B --> 
+    <bean id="test2JtaDataSource" class="org.enhydra.jdbc.pool.StandardXAPoolDataSource" destroy-method="shutdown"> 
+            <property name="dataSource"> 
+                    <bean class="org.enhydra.jdbc.standard.StandardXADataSource" destroy-method="shutdown"> 
+                            <property name="transactionManager" ref="jotm"/> 
+                            <property name="driverName" value="com.mysql.jdbc.Driver"/> 
+                            <property name="url" value="jdbc:mysql://${test2.jdbc.host}:${test2.jdbc.port}/${test2.jdbc.dbname}?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true"/> 
+                    </bean> 
+            </property> 
+            <property name="user" value="${test2.jdbc.username}"/> 
+            <property name="password" value="${test2.jdbc.password}"/> 
+    </bean> 
+	<!-- 事务切面配置 -->
+	<!--
+	<aop:config>
+		<aop:pointcut id="serviceOperation" expression="execution(* *..servi1ce*..*(..))" />
+		<aop:advisor pointcut-ref="serviceOperation" advice-ref="txAdvice" />
+	</aop:config>
+	-->
+	<!-- 通知配置 -->
+	<!--
+	<tx:advice id="txAdvice" transaction-manager="myJtaManager">
+		<tx:attributes>
+			<tx:method name="delete*" rollback-for="Exception" />
+			<tx:method name="save*" rollback-for="Exception" />
+			<tx:method name="update*" rollback-for="Exception" />
+			<tx:method name="*" read-only="true" rollback-for="Exception" />
+		</tx:attributes>
+	</tx:advice>
+	-->
+	<!--根据dataSourceA和sql-map-config_A.xml创建一个SqlMapClientA -->
+
+	<bean id="test1JtaSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="test1JtaDataSource" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+			value="kevin.practice.mybatis.test1.database.gen.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="test1JtaSqlSessionFactory" />
+	</bean>
+	<bean id="test2JtaSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="test2JtaDataSource" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+			value="kevin.practice.mybatis.test1.database.gen.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="test2JtaSqlSessionFactory" />
+	</bean>
+	<bean id="jtaTransactionManager"
+		class="org.springframework.transaction.jta.JtaTransactionManager">
+		<property name="userTransaction">
+			<ref local="jotm" />
+		</property>
+	</bean>
+</beans>

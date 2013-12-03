@@ -85,6 +85,7 @@ public class MapperFactory {
 		try {
 			transaction.rollback();
 		} catch (Exception e) {
+		    e.printStackTrace();
 			log.error("transaction rollback error", e);
 		}
 	}

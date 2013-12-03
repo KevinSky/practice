@@ -82,5 +82,21 @@ public class NewsServiceImpl implements NewsService {
 			throw new ServiceException(e);
 		}
 	}
+
+
+    @Override
+    public void saveNewsWithNestedTransaction(String host, String url, String title) throws BusinessException,
+            ServiceException {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public void saveNewsSameTransaction(String host, String url, String title) throws BusinessException,
+            ServiceException {
+        // TODO Auto-generated method stub
+        
+    }
 	
 }
