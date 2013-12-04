@@ -5,10 +5,34 @@
 			</pattern>
 		</encoder>
 	</appender>
-	<logger name="kevin" level="error" additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
+
+	<appender name="errorlog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>e:/logs/test/test_error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>e:/logs/test/test_error_%d{yyyy-MM-dd}_%i.log.zip
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%date [%thread] [%file:%line] [%level %logger{0}] - %msg%n
+			</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+	</appender>
 	
+	<logger name="kevin.practice.mybatis.service" level="error" additivity="false">
+		<appender-ref ref="errorlog" />
+	</logger>
+
 	<logger name="kevin.lib.performance" level="error" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>

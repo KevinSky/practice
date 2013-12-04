@@ -86,6 +86,7 @@
 	</bean>
 	<!-- test2 end -->
 	<!-- spring declarative transaction management -->  
+	<!--
 	<aop:config>  
 		<aop:pointcut id="testMethods"   
 			expression="execution(* kevin.practice.mybatis.service.spring.TestServiceImpl.*(..))"/>   
@@ -96,6 +97,6 @@
 			<tx:method name="testNestedAOPTransaction" rollback-for="ServiceException"/>  
 		</tx:attributes>  
 	</tx:advice>  
+	-->
 	
-	<tx:jta-transaction-manager />
 </beans>

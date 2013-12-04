@@ -22,8 +22,9 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
 	</context:component-scan>
 	
+	<bean id="testService" class="kevin.practice.mybatis.service.spring.TestServiceImpl"></bean>
 	<context:annotation-config />
-	<!--import resource="mybatis.xml" /-->
-	<import resource="jta.xml" />
+	
+	<import resource="mybatis.xml" />
 
 </beans>

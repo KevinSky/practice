@@ -3,6 +3,8 @@ package kevin.practice.mybatis.dao.factory;
 import java.sql.Connection;
 
 import kevin.practice.mybatis.dao.custom.CustomNewsMapper;
+import kevin.practice.mybatis.test1.database.gen.mapper.Test1Mapper;
+import kevin.practice.mybatis.test2.database.gen.mapper.Test2Mapper;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.ibatis.mapping.Environment;
@@ -46,18 +48,20 @@ public class MapperFactory {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource
-                .setUrl("jdbc:mysql://127.0.0.1:3306/news_system?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true");
+                .setUrl("jdbc:mysql://127.0.0.1:3306/test1?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true");
         dataSource.setUsername("root");
         dataSource.setPassword("mysql");
-        dataSource.setMaxActive(50);
-        dataSource.setMaxIdle(20);
-        dataSource.setMaxWait(10);
+        dataSource.setMaxActive(100);
+        dataSource.setMaxIdle(100);
+        dataSource.setMaxWait(5000);
         dataSource.setDefaultAutoCommit(true);
 
         TransactionFactory transactionFactory = new JdbcTransactionFactory();
         environment = new Environment("development", transactionFactory, dataSource);
         configuration = new Configuration(environment);
         configuration.addMapper(CustomNewsMapper.class);
+        configuration.addMapper(Test1Mapper.class);
+        configuration.addMapper(Test2Mapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 
         log.debug("init sqlSessionFactory ok!");

@@ -20,6 +20,14 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>MyBatisServlet</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/my</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>kevin.practice.mybatis.servlet.TestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/test</url-pattern>
 	</servlet-mapping>
 </web-app>
