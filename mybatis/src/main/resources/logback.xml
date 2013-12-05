@@ -6,6 +6,46 @@
 		</encoder>
 	</appender>
 
+
+	<appender name="logTotal"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>e:/logs/test/logTotal.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>e:/logs/test/logTotal_%d{yyyy-MM-dd}_%i.log.zip
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%date [%thread] [%file:%line] [%level %logger{0}] - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="logInsert"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>e:/logs/test/logInsert.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>e:/logs/test/logInsert_%d{yyyy-MM-dd}_%i.log.zip
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%date [%thread] [%file:%line] [%level %logger{0}] - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
 	<appender name="errorlog"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>e:/logs/test/test_error.log</file>
@@ -28,6 +68,14 @@
 			<level>ERROR</level>
 		</filter>
 	</appender>
+	
+	
+	<logger name="logTotal" level="info" additivity="false">
+		<appender-ref ref="logTotal" />
+	</logger>
+	<logger name="logInsert" level="info" additivity="false">
+		<appender-ref ref="logInsert" />
+	</logger>
 	
 	<logger name="kevin.practice.mybatis.service" level="error" additivity="false">
 		<appender-ref ref="errorlog" />

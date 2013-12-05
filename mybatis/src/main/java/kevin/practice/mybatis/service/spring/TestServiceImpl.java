@@ -157,7 +157,6 @@ public class TestServiceImpl extends BaseTestServiceImpl implements TestInterfac
         TransactionStatus status = test1TransactionManager.getTransaction(def);
         try {
             saveTest1(name1);
-            Thread.sleep(10);
             saveTest1(name2);
             test1TransactionManager.commit(status);
         } catch (Exception ex) {

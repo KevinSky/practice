@@ -29,7 +29,6 @@ public class NoTransactionTestServiceImpl extends BaseTestServiceImpl implements
     public void saveTwoTest(String name1, String name2) throws ServiceException {
         try {
             saveTest1(name1);
-            Thread.sleep(10);
             saveTest1(name2);
         } catch (Exception e) {
             log.error("no transaction error", e);
